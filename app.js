@@ -12,10 +12,19 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
  const adminRoutes = require('./routes/admin');
-// const shopRoutes = require('./routes/shop');
+const shopRoutes = require('./routes/shop');
+const { pathToFileURL } = require('url');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+const logRequestedUrl = (req, res, next) => {
+  console.log('Requested URL:', req.url);
+  next(); 
+};
+app.use(logRequestedUrl);
+app.use(express.static(path.join(__dirname, 'public')) )
 
 app.use((req, res, next) => {
   // User.findById(1)
@@ -29,7 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/admin', adminRoutes);
-// app.use(shopRoutes);
+ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
